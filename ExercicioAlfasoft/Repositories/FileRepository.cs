@@ -65,26 +65,17 @@ namespace ExercicioAlfasoft.Repositories
             }
         }
 
-        public async Task<bool> CanExecuteRequestAsync()
+        public async Task<string?> GetLastRequestDatetimeAsync()
         {
             try
             {
                 if (!File.Exists(_datetimeFilePath))
-                    return true;
+                    return null;
 
                 using var reader = new StreamReader(_datetimeFilePath);
                 var content = await reader.ReadToEndAsync();
 
-                if (string.IsNullOrWhiteSpace(content))
-                    return true;
-
-                if (DateTime.TryParse(content, out var datetime))
-                {
-                    if (DateTime.UtcNow < datetime.AddSeconds(60))
-                        return false;
-                }
-
-                return true;
+                return content;
             }
             catch
             {

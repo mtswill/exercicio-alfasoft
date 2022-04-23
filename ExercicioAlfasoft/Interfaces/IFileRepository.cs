@@ -5,6 +5,6 @@
         Task<List<string>> ReadFileAsync();
         Task WriteLogAsync(string logContent);
         Task SaveLastRequestDatetimeAsync();
-        Task<bool> CanExecuteRequestAsync();
+        Task<string?> GetLastRequestDatetimeAsync();
     }
 }

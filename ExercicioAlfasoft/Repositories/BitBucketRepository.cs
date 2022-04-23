@@ -19,13 +19,12 @@ namespace ExercicioAlfasoft.Repositories
 
         public async Task ExecuteRequestsAsync(List<string> usernames)
         {
-
             try
             {
                 if (usernames is null)
                     throw new Exception("The usernames list is null.");
 
-                if (!await _fileRepository.CanExecuteRequestAsync())
+                if (!await CanExecuteRequestAsync())
                     throw new Exception("The request cannot be executed in an interval shorter than 60 seconds.");
 
                 foreach (var username in usernames)
@@ -49,6 +48,19 @@ namespace ExercicioAlfasoft.Repositories
             {
                 Console.WriteLine("\n" + ex.Message);
             }
+        }
+
+        private async Task<bool> CanExecuteRequestAsync()
+        {
+            var datetimeString = await _fileRepository.GetLastRequestDatetimeAsync();
+
+            if (DateTime.TryParse(datetimeString, out var datetime))
+            {
+                if (DateTime.UtcNow < datetime.AddSeconds(60))
+                    return false;
+            }
+
+            return true;
         }
     }
 }
