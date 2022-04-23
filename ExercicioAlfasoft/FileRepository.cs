@@ -1,6 +1,8 @@
-﻿namespace ExercicioAlfasoft
+﻿using ExercicioAlfasoft.Interfaces;
+
+namespace ExercicioAlfasoft
 {
-    public class FileRepository
+    public class FileRepository : IFileRepository
     {
         private readonly string _filePath;
         private static readonly string _logFilePath = Path.Combine(Directory.GetCurrentDirectory(), "log_file.txt");
@@ -35,6 +37,9 @@
         {
             try
             {
+                if (!Directory.Exists(_logFilePath))
+                    Directory.CreateDirectory(_logFilePath);
+
                 await File.AppendAllTextAsync(_logFilePath, logContent + Environment.NewLine);
             }
             catch

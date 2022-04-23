@@ -1,5 +1,7 @@
 ﻿using ExercicioAlfasoft;
+using ExercicioAlfasoft.Interfaces;
 
+Console.Write("Enter the path to the names file: ");
 var filePath = Console.ReadLine();
 
 if (string.IsNullOrWhiteSpace(filePath))
@@ -8,8 +10,8 @@ if (string.IsNullOrWhiteSpace(filePath))
     return;
 }
 
-var fileRepository = new FileRepository(filePath);
+IFileRepository fileRepository = new FileRepository(filePath);
+IBitBucketRepository bitBucketRepository = new BitBucketRepository(fileRepository);
 
 var nameList = await fileRepository.ReadFileAsync();
-
-await Task.Delay(5000);
+await bitBucketRepository.ExecuteRequestsAsync(nameList);
