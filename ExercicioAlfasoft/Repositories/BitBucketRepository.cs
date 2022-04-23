@@ -1,7 +1,7 @@
 ﻿using ExercicioAlfasoft.Interfaces;
 using System.Web;
 
-namespace ExercicioAlfasoft
+namespace ExercicioAlfasoft.Repositories
 {
     public class BitBucketRepository : IBitBucketRepository
     {
@@ -20,6 +20,15 @@ namespace ExercicioAlfasoft
 
         public async Task ExecuteRequestsAsync(List<string> usernames)
         {
+            if (usernames is null)
+                return;
+
+            if (!await _fileRepository.CanExecuteRequestAsync())
+            {
+                Console.WriteLine("The request cannot be executed in an interval shorter than 60 seconds.");
+                return;
+            }
+
             foreach (var username in usernames)
             {
                 try
@@ -30,9 +39,13 @@ namespace ExercicioAlfasoft
                     var response = await _httpClient.GetAsync(username);
                     var content = await response.Content.ReadAsStringAsync();
 
+                    await _fileRepository.SaveLastRequestDatetimeAsync();
+
                     Console.Write("Request response: ");
                     Console.WriteLine(content);
                     Console.WriteLine("\n");
+
+                    await _fileRepository.WriteLogAsync(content);
                 }
                 finally
                 {

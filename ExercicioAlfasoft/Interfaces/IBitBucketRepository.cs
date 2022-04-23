@@ -2,6 +2,6 @@
 {
     public interface IBitBucketRepository
     {
-        public Task ExecuteRequestsAsync(List<string> usernames);
+        Task ExecuteRequestsAsync(List<string> usernames);
     }
 }

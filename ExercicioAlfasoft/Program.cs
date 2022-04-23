@@ -1,5 +1,5 @@
-﻿using ExercicioAlfasoft;
-using ExercicioAlfasoft.Interfaces;
+﻿using ExercicioAlfasoft.Interfaces;
+using ExercicioAlfasoft.Repositories;
 
 Console.Write("Enter the path to the names file: ");
 var filePath = Console.ReadLine();

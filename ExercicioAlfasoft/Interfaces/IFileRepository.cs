@@ -2,7 +2,9 @@
 {
     public interface IFileRepository
     {
-        public Task<List<string>> ReadFileAsync();
-        public Task WriteLogAsync(string logContent);
+        Task<List<string>> ReadFileAsync();
+        Task WriteLogAsync(string logContent);
+        Task SaveLastRequestDatetimeAsync();
+        Task<bool> CanExecuteRequestAsync();
     }
 }
