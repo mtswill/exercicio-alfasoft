@@ -1,5 +1,4 @@
 ﻿using ExercicioAlfasoft.Interfaces;
-using System.Web;
 
 namespace ExercicioAlfasoft.Repositories
 {
@@ -20,18 +19,16 @@ namespace ExercicioAlfasoft.Repositories
 
         public async Task ExecuteRequestsAsync(List<string> usernames)
         {
-            if (usernames is null)
-                return;
 
-            if (!await _fileRepository.CanExecuteRequestAsync())
+            try
             {
-                Console.WriteLine("The request cannot be executed in an interval shorter than 60 seconds.");
-                return;
-            }
+                if (usernames is null)
+                    throw new Exception("The usernames list is null.");
 
-            foreach (var username in usernames)
-            {
-                try
+                if (!await _fileRepository.CanExecuteRequestAsync())
+                    throw new Exception("The request cannot be executed in an interval shorter than 60 seconds.");
+
+                foreach (var username in usernames)
                 {
                     Console.WriteLine($"\nRunning request for username '{username}'");
                     Console.WriteLine($"Request URL: '{_httpClient.BaseAddress + username}'");
@@ -43,14 +40,14 @@ namespace ExercicioAlfasoft.Repositories
 
                     Console.Write("Request response: ");
                     Console.WriteLine(content);
-                    Console.WriteLine("\n");
 
                     await _fileRepository.WriteLogAsync(content);
-                }
-                finally
-                {
                     await Task.Delay(5000);
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("\n" + ex.Message);
             }
         }
     }

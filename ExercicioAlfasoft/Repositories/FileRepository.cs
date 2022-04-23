@@ -6,7 +6,7 @@ namespace ExercicioAlfasoft.Repositories
     {
         private readonly string _filePath;
         private static readonly string _logFilePath = Path.Combine(Directory.GetCurrentDirectory(), "log_file.txt");
-        private static readonly string _configFilePath = Path.Combine(Directory.GetCurrentDirectory(), "config.txt");
+        private static readonly string _datetimeFilePath = Path.Combine(Directory.GetCurrentDirectory(), "datetime.txt");
 
         public FileRepository(string filePath)
         {
@@ -35,8 +35,7 @@ namespace ExercicioAlfasoft.Repositories
             }
             catch
             {
-                Console.WriteLine("Could not read the file.");
-                throw;
+                throw new Exception("Could not read the file.");
             }
         }
 
@@ -44,13 +43,12 @@ namespace ExercicioAlfasoft.Repositories
         {
             try
             {
-                using var stream = new StreamWriter(_logFilePath);
-                await stream.WriteLineAsync(logContent + Environment.NewLine);
+                using var stream = new StreamWriter(_logFilePath, true);
+                await stream.WriteAsync($"{DateTime.UtcNow} - {logContent + Environment.NewLine}");
             }
             catch
             {
-                Console.WriteLine("The log content could not be saved.");
-                throw;
+                throw new Exception("The log content could not be saved.");
             }
         }
 
@@ -58,13 +56,12 @@ namespace ExercicioAlfasoft.Repositories
         {
             try
             {
-                using var stream = new StreamWriter(_configFilePath);
+                using var stream = new StreamWriter(_datetimeFilePath);
                 await stream.WriteAsync(DateTime.UtcNow.ToString());
             }
             catch
             {
-                Console.WriteLine("The last request datetime could not be saved.");
-                throw;
+                throw new Exception("The last request datetime could not be saved.");
             }
         }
 
@@ -72,10 +69,10 @@ namespace ExercicioAlfasoft.Repositories
         {
             try
             {
-                if (!File.Exists(_configFilePath))
+                if (!File.Exists(_datetimeFilePath))
                     return true;
 
-                using var reader = new StreamReader(_configFilePath);
+                using var reader = new StreamReader(_datetimeFilePath);
                 var content = await reader.ReadToEndAsync();
 
                 if (string.IsNullOrWhiteSpace(content))
@@ -91,8 +88,7 @@ namespace ExercicioAlfasoft.Repositories
             }
             catch
             {
-                Console.WriteLine("Could not read the config file.");
-                throw;
+                throw new Exception("Could not read the datetime file.");
             }
         }
     }
